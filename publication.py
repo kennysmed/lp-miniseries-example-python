@@ -70,6 +70,7 @@ def sample():
                         image_name=app.config['EDITIONS'][delivery_count][0],
                         description=app.config['EDITIONS'][delivery_count][1]
                     ))
+    response.headers['Content-Type'] = 'text/html; charset=utf-8'
     response.headers['ETag'] = '"%s"' % (
         hashlib.md5('sample'+datetime.today().strftime('%d%m%Y')).hexdigest() )
     return response
@@ -106,8 +107,12 @@ def edition():
                         image_name=app.config['EDITIONS'][delivery_count][0],
                         description=app.config['EDITIONS'][delivery_count][1]
                     ))
+        response.headers['Content-Type'] = 'text/html; charset=utf-8'
         response.headers['ETag'] = '"%s"' % (
-                                hashlib.md5(str(delivery_count)).hexdigest() )
+                hashlib.md5(
+                    str(delivery_count) + datetime.today().strftime('%d%m%Y')
+                ).hexdigest()
+            )
         return response
 
 
