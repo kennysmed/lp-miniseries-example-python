@@ -1,51 +1,17 @@
 from datetime import datetime
 from flask import Flask, make_response, render_template, Response, request, send_from_directory
 import hashlib
+import json
+
 
 # Default configuration
 DEBUG = False
 
-# Data for each edition: image filename, description.
-EDITIONS = [
-    ['adder.png', 'Adder'],
-    ['aegopithecus.png', 'Aegopithecus'],
-    ['african_bugil.png', 'African Bugil'],
-    ['allocamelus.png', 'Allocamelus'],
-    ['alpine_mouse.png', 'Alpine Mouse'],
-    ['another_monster.png', 'Another Monster'],
-    ['antalope.png', 'Antalope'],
-    ['ape.png', 'Ape'],
-    ['ape_calitrich.png', 'Ape Calitrich'],
-    ['arabian_crocodile.png', 'Arabian or Egyptian Land Crocodile'],
-    ['arabian_sheep_broad.png', 'Arabian Sheep with a broad tail'],
-    ['arabian_sheep_long.png', 'Arabian Sheep with a long tail'],
-    ['aspes.png', 'Aspes'],
-    ['asse.png', 'Asse'],
-    ['badger.png', 'Badger'],
-    ['bear.png', 'Bear'],
-    ['bear_ape.png', 'Bear Ape Arctopithecus'],
-    ['beaver.png', 'Beaver'],
-    ['boa.png', 'Boa'],
-    ['camelopardals.png', 'Camelopardals'],
-    ['cat.png', 'Cat'],
-    ['cepus_monkey.png', 'Cepus or Martime monkey'],
-    ['hydra.png', 'Hydra'],
-    ['lamia.png', 'Lamia'],
-    ['lion.png', 'Lion'],
-    ['man_ape.png', 'Man Ape'],
-    ['mantichora.png', 'Mantichora'],
-    ['mole.png', 'The mole or want'],
-    ['porcupine.png', 'Porcuspine or Porcupine'],
-    ['prasyan_ape.png', 'Prasyan Ape'],
-    ['sagoin.png', 'Sagoin, called Galeopithecus'],
-    ['satyre.png', 'Satyre'],
-    ['scythian_wolf.png', 'Scythian Wolf'],
-    ['sphinx.png', 'Spinga or Sphinx'],
-    ['squirrel.png', 'Squirrel'],
-    ['su.png', 'A wilde beaste in the New Found World called SU'],
-    ['unicorn.png', 'Unicorn'],
-    ['winged_dragon.png', 'Winged Dragon'],
-]
+# EDITIONS will be an array of arrays.
+# Each sub-array be like ["ape.png", "Ape"]
+with open('editions.json') as editions_data:
+    EDITIONS = json.load(editions_data)
+
 
 app = Flask(__name__, static_url_path='')
 app.config.from_object(__name__)
