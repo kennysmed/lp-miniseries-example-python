@@ -20,6 +20,10 @@ app.config.from_object(__name__)
 app.config.from_envvar('MINISERIES_SETTINGS', silent=True)
 
 
+@app.route('/')
+def root():
+    return make_response('A Little Printer publication.')
+
 @app.route('/meta.json')
 @app.route('/icon.png')
 def static_from_root():
@@ -35,54 +39,53 @@ def image(image_name):
 @app.route('/sample/')
 def sample():
     # We can choose which edition we want as the sample:
-    delivery_count = 0
+    edition_number = 0
     response = make_response(render_template(
                         'edition.html',
-                        delivery_count=delivery_count,
-                        image_name=app.config['EDITIONS'][delivery_count][0],
-                        description=app.config['EDITIONS'][delivery_count][1]
+                        edition_number=edition_number,
+                        image_name=app.config['EDITIONS'][edition_number][0],
+                        description=app.config['EDITIONS'][edition_number][1]
                     ))
     response.headers['Content-Type'] = 'text/html; charset=utf-8'
     response.headers['ETag'] = '"%s"' % (
-        hashlib.md5('sample'+datetime.today().strftime('%d%m%Y')).hexdigest() )
+        hashlib.md5('sample'+datetime.utcnow().strftime('%d%m%Y')).hexdigest() )
     return response
 
 
 # Called by BERG Cloud to generate publication output to print.
 @app.route('/edition/')
 def edition():
-    delivery_count = int(request.args.get('delivery_count', 0))
+    edition_number = int(request.args.get('delivery_count', 0))
 
     if 'local_delivery_time' in request.args:
         # local_delivery_time is like '2013-10-16T23:20:30-08:00'.
-        # We strip off the timezone, as we only need to know what day this
-        # date is on.
+        # We strip off the timezone, as we only need to know the day.
         date = datetime.strptime(request.args['local_delivery_time'][:-6],
                                                         '%Y-%m-%dT%H:%M:%S')
     else:
         # Default to now.
-        date = datetime.today()
+        date = datetime.utcnow()
 
-    if (delivery_count + 1) > len(app.config['EDITIONS']):
+    if (edition_number + 1) > len(app.config['EDITIONS']):
         # The publication has finished, so unsubscribe this subscriber.
         return Response(response=None, status=410)
 
-    elif date.isoweekday() != 3:
-        # No content is delivered this day (Monday=1, Tuesday=2, etc).
+    elif date.isoweekday() in (6, 7):
+        # No content is delivered this day.
         return Response(response=None, status=204)
 
     else:
         # It's all good, so display the publication.
         response = make_response(render_template(
                         'edition.html',
-                        delivery_count=delivery_count,
-                        image_name=app.config['EDITIONS'][delivery_count][0],
-                        description=app.config['EDITIONS'][delivery_count][1]
+                        edition_number=edition_number,
+                        image_name=app.config['EDITIONS'][edition_number][0],
+                        description=app.config['EDITIONS'][edition_number][1]
                     ))
         response.headers['Content-Type'] = 'text/html; charset=utf-8'
         response.headers['ETag'] = '"%s"' % (
                 hashlib.md5(
-                    str(delivery_count) + datetime.today().strftime('%d%m%Y')
+                    str(edition_number) + datetime.utcnow().strftime('%d%m%Y')
                 ).hexdigest()
             )
         return response

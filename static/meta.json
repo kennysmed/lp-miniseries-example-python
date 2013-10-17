@@ -3,7 +3,7 @@
   "publication_api_version": "1.0",
   "name": "The History of Four-Footed Beasts and Serpents",
   "description": "Woodcuts of real and fantastical creatures from the 1658 book compiled by English clergyman Edward Topsell",
-  "delivered_on": "every Wednesday",
+  "delivered_on": "every weekday",
   "external_configuration": false,
   "send_timezone_info": true,
   "send_delivery_count": true,

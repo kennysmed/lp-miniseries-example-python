@@ -67,7 +67,7 @@
     <img class="illustration" src="{{ url_for('image', image_name=image_name) }}" />
 
     <p class="edition">
-        {{ delivery_count+1 }} of {{ config['EDITIONS']|count }}
+      {{ edition_number+1 }} of {{ config['EDITIONS']|count }}
     </p>
 
     <p class="description">{{ description }}</p>
