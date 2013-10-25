@@ -23,7 +23,7 @@ On Windows use this instead:
 
     >set MINISERIES_SETTINGS=.\settings.cfg
 
-Install Flask using pip:
+Flask can be installed using [pip](https://pypi.python.org/pypi/pip):
 
 	$ pip install -r requirements.txt
 
